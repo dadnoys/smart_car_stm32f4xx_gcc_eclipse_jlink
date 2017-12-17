@@ -1,0 +1,1 @@
+JLinkExe -device STM32F407VE -CommanderScript jlink_script

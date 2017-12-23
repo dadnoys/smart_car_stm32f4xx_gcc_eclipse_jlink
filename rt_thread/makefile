@@ -5,7 +5,8 @@ CUROBJc = $(patsubst %c,%o,$(CURSRCC))
 CURSRCs = ${wildcard *.s}
 CUROBJs = $(patsubst %s,%o,$(CURSRCs))
 
-all:$(SUBDIR) $(CUROBJc) $(CUROBJs)
+OS:$(SUBDIR) $(CUROBJc) $(CUROBJs)
+	$(ld) -r -o $@ $(CUROBJc) $(CUROBJs) ./src/src ./cpu/cpu ./
 $(CUROBJc): %.o:%.c
 	$(cc) -c $(cflags) $^ -o $@
 $(CUROBJs): %.o:%.s

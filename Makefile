@@ -1,12 +1,11 @@
-#write by haobo @ZhengZhou 2017年12月16日23:59:48
+#write by haobo @ZhengZhou 2017锟斤拷12锟斤拷16锟斤拷23:59:48
 prefix = arm-none-eabi-
 cc = $(prefix)gcc
 ld = $(prefix)ld
 
 		
-#一些目录名
 dir_app =$(shell ls -l | grep ^d | awk '{if( $$9 == "app") print $$9}' )
-#编译用到的文件夹
+
 subdir = $(dir_app)
 dir_arch=$(shell ls -l | grep ^d | awk '{if( $$9 == "arch") print $$9}' )
 subdir += $(dir_arch)
@@ -16,7 +15,7 @@ dir_cmsis=$(shell ls -l | grep ^d | awk '{if( $$9 == "CMSIS") print $$9}')
 subdir += $(dir_cmsis)
 dir_driver=$(shell ls -l | grep ^d | awk '{if( $$9 == "driver") print $$9}')
 subdir += $(dir_driver)
-dir_OS =$(shell ls -l | grep ^d | awk '{if( $$9 == "freeRTOS") print $$9}')
+dir_OS =$(shell ls -l | grep ^d | awk '{if( $$9 == "rt_thread") print $$9}')
 subdir += $(dir_OS)
 dir_inc=$(shell ls -l | grep ^d | awk '{if( $$9 == "include") print $$9}')
 
@@ -31,17 +30,20 @@ cflags=	-I $(dir_root)/$(dir_inc)/bll	\
 		-I $(dir_root)/$(dir_inc)/arch  \
 		-I $(dir_root)/$(dir_inc)/driver \
 		-I $(dir_root)/$(dir_inc)/freeRTOS	\
+		-I /home/haobo/tools/arm-none-eabi/arm-none-eabi/include	\
 		-mcpu=cortex-m4 -mthumb -Wall -mfloat-abi=hard -mfpu=fpv4-sp-d16\
 		-ffunction-sections -fdata-sections
-		
-#		./freeRTOS/OS	\		
-#		./bll/bll		\	
+
+
 
 lditem=./app/app	\
 		./arch/arch	\
 		./CMSIS/cmsis	\
 		./driver/driver	
-gcc_libpath=/usr/lib/arm-none-eabi/newlib/
+		
+gcc_libpath= -L /home/haobo/tools/arm-none-eabi/arm-none-eabi/lib/hard \
+			 -L /home/haobo/tools/arm-none-eabi/lib/gcc/arm-none-eabi/7.2.1/hard
+
 
 CURSRC = ${wildcard *.c}
 CUROBJ = $(patsubst %c,%o,$(CURSRC))
@@ -79,7 +81,7 @@ OS:ECHOOS
 	make -C $(dir_OS)
 ECHOOS:
 	@echo $(dir_OS)	
-	
+
 $(CUROBJ): %.o:%.c
 	$(cc) -c $(cflags) $^ -o $(ROOTDIR)/$(OBJDIR)/$@	
 
